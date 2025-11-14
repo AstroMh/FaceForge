@@ -9,9 +9,9 @@ from tensorflow.keras import layers
 import time
 
 # Define paths and parameters
-celeba_dir = r"C:\Users\moham\Downloads\archive\img_align_celeba\img_align_celeba"
-BATCH_SIZE = 128
-BUFFER_SIZE = 60000
+celeba_dir = r"C:\Users\moham\PycharmProjects\FaceForge\Project\data\img_align_celeba"
+BATCH_SIZE = 64
+BUFFER_SIZE = 120000
 EPOCHS = 50
 noise_dim = 100
 num_examples_to_generate = 16
@@ -19,16 +19,20 @@ seed = tf.random.normal([num_examples_to_generate, noise_dim])
 
 # Load and preprocess images
 def load_and_preprocess_image(path):
-    image = tf.io.read_file(path)
-    image = tf.image.decode_jpeg(image, channels=3)
-    image = tf.image.resize(image, [64, 64])
-    image = (image - 127.5) / 127.5  # Normalize to [-1, 1]
-    return image
+    try:
+        image = tf.io.read_file(path)
+        image = tf.image.decode_jpeg(image, channels=3)
+        image = tf.image.resize(image, [64, 64])
+        image = (image - 127.5) / 127.5  # Normalize to [-1, 1]
+        return image
+    except:
+        print(f"Skipping corrupted image: {path}")
+        return None
 
 # Get dataset
-image_files = [os.path.join(celeba_dir, f) for f in os.listdir(celeba_dir) if f.endswith('.jpg')]
-train_dataset = tf.data.Dataset.from_tensor_slices(image_files)
+train_dataset = tf.data.Dataset.list_files(os.path.join(celeba_dir, '*.jpg'), shuffle=True)
 train_dataset = train_dataset.map(load_and_preprocess_image, num_parallel_calls=tf.data.experimental.AUTOTUNE)
+train_dataset = train_dataset.filter(lambda x: x is not None)
 train_dataset = train_dataset.shuffle(BUFFER_SIZE).batch(BATCH_SIZE)
 
 # Define the generator model
@@ -92,8 +96,8 @@ def generator_loss(fake_output):
     return cross_entropy(tf.ones_like(fake_output), fake_output)
 
 # Define optimizers
-generator_optimizer = tf.keras.optimizers.Adam(1e-4)
-discriminator_optimizer = tf.keras.optimizers.Adam(1e-4)
+generator_optimizer = tf.keras.optimizers.Adam(2e-4)
+discriminator_optimizer = tf.keras.optimizers.Adam(2e-4)
 
 # Initialize models
 generator = generator_model()
@@ -101,6 +105,7 @@ discriminator = discriminator_model()
 
 # Set up checkpoints
 checkpoint_dir = './training_checkpoints'
+os.makedirs(checkpoint_dir, exist_ok=True)
 checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt")
 checkpoint = tf.train.Checkpoint(generator_optimizer=generator_optimizer,
                                  discriminator_optimizer=discriminator_optimizer,

@@ -11,6 +11,7 @@ def load_and_preprocess_image(path):
 
 def get_dataset():
     image_files = [os.path.join(celeba_dir, f) for f in os.listdir(celeba_dir) if f.endswith('.jpg')]
+    image_files = image_files[:5000]
     train_dataset = tf.data.Dataset.from_tensor_slices(image_files)
     train_dataset = train_dataset.map(load_and_preprocess_image, num_parallel_calls=tf.data.experimental.AUTOTUNE)
     train_dataset = train_dataset.shuffle(BUFFER_SIZE).batch(BATCH_SIZE)
