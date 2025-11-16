@@ -181,7 +181,7 @@ Please follow the [CelebA Terms of Use](http://mmlab.ie.cuhk.edu.hk/projects/Cel
 **Connect with me:**
 - [![Telegram](https://img.shields.io/badge/Telegram-Contact-blue?logo=telegram)](https://t.me/Astr0Mh)
 - [![Telegram Channel](https://img.shields.io/badge/Telegram-Channel-lightblue?logo=telegram)](https://t.me/TheThoughtsDirectory)
-- [![LinkedIn](https://img.shields.io/badge/LinkedIn-Profile-blue?logo=linkedin)](https://www.linkedin.com/in/mohammad-hemmat-talab-840412321)
+- [![LinkedIn](https://img.shields.io/badge/LinkedIn-Profile-blue?logo=linkedin)](https://www.linkedin.com/in/mohammadhemmat/)
 
 ---
 
